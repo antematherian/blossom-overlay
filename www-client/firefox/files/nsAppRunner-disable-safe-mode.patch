@@ -1,0 +1,11 @@
+--- a/toolkit/xre/nsAppRunner.cpp	2017-01-14 04:43:28.043980493 +0000
++++ b/toolkit/xre/nsAppRunner.cpp	2017-01-14 04:44:18.223980123 +0000
+@@ -3312,7 +3312,7 @@
+ 
+ 
+   if (EnvHasValue("MOZ_SAFE_MODE_RESTART")) {
+-    gSafeMode = true;
++    gSafeMode = false;
+     // unset the env variable
+     SaveToEnv("MOZ_SAFE_MODE_RESTART=");
+   }
