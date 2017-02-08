@@ -40,8 +40,8 @@ KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-lin
 
 SLOT="0"
 LICENSE="MPL-2.0 GPL-2 LGPL-2.1"
-IUSE="bindist +gmp-autoupdate hardened hwaccel jack pgo rust selinux test"
-RESTRICT="!bindist? ( bindist )"
+IUSE="+gmp-autoupdate hardened hwaccel jack pgo rust selinux test"
+RESTRICT="( bindist )"
 
 PATCH_URIS=( https://dev.gentoo.org/~{anarchy,axs,polynomial-c}/mozilla/patchsets/${PATCH}.tar.xz )
 SRC_URI="${SRC_URI}
@@ -87,14 +87,6 @@ pkg_setup() {
 		SESSION_MANAGER \
 		XDG_SESSION_COOKIE \
 		XAUTHORITY
-
-	if ! use bindist; then
-		einfo
-		elog "You are enabling official branding. You may not redistribute this build"
-		elog "to any users on your network or the internet. Doing so puts yourself into"
-		elog "a legal problem with Mozilla Foundation"
-		elog "You can disable it by emerging ${PN} _with_ the bindist USE-flag"
-	fi
 
 	if use pgo; then
 		einfo
@@ -315,30 +307,22 @@ src_install() {
 	mozlinguas_src_install
 
 	local size sizes icon_path icon name
-	if use bindist; then
-		sizes="16 32 48"
-		icon_path="${S}/browser/branding/aurora"
-		# Firefox's new rapid release cycle means no more codenames
-		# Let's just stick with this one...
-		icon="aurora"
-		name="Aurora"
+	sizes="16 32 48"
+	icon_path="${S}/browser/branding/aurora"
+	# Firefox's new rapid release cycle means no more codenames
+	# Let's just stick with this one...
+	icon="aurora"
+	name="Aurora"
 
-		# Override preferences to set the MOZ_DEV_EDITION defaults, since we
-		# don't define MOZ_DEV_EDITION to avoid profile debaucles.
-		# (source: browser/app/profile/firefox.js)
-		cat >>"${BUILD_OBJ_DIR}/dist/bin/browser/defaults/preferences/all-gentoo.js" <<PROFILE_EOF
+	# Override preferences to set the MOZ_DEV_EDITION defaults, since we
+	# don't define MOZ_DEV_EDITION to avoid profile debaucles.
+	# (source: browser/app/profile/firefox.js)
+	cat >>"${BUILD_OBJ_DIR}/dist/bin/browser/defaults/preferences/all-gentoo.js" <<PROFILE_EOF
 pref("app.feedback.baseURL", "https://input.mozilla.org/%LOCALE%/feedback/firefoxdev/%VERSION%/");
 sticky_pref("lightweightThemes.selectedThemeID", "firefox-devedition@mozilla.org");
 sticky_pref("browser.devedition.theme.enabled", true);
 sticky_pref("devtools.theme", "dark");
 PROFILE_EOF
-
-	else
-		sizes="16 22 24 32 256"
-		icon_path="${S}/browser/branding/official"
-		icon="${PN}"
-		name="Mozilla Firefox"
-	fi
 
 	# Install icons and .desktop for menu entry
 	for size in ${sizes}; do
