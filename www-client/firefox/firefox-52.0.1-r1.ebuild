@@ -126,6 +126,11 @@ src_prepare() {
 	# Apply our patches
 	eapply "${WORKDIR}/firefox"
 
+	if use bindist; then
+	# Apply patch to disable safe-mode
+	eapply "${FILESDIR}/nsAppRunner-disable-safe-mode.patch"
+	fi
+
 	# Enable gnomebreakpad
 	if use debug ; then
 		sed -i -e "s:GNOME_DISABLE_CRASH_DIALOG=1:GNOME_DISABLE_CRASH_DIALOG=0:g" \
