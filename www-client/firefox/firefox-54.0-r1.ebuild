@@ -120,7 +120,7 @@ src_prepare() {
 	# Apply our patches
 	eapply "${WORKDIR}/firefox"
 	# Disable safe mode
-	eapply "${FILESDIR}"/nsAppRunner-disable-safe-mode.patch
+	eapply "${FILESDIR}"/nsAppRunner-disable-safe-mode-${PN}-54.0.patch
 
 	# Enable gnomebreakpad
 	if use debug ; then
